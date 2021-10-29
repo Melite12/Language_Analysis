@@ -102,7 +102,7 @@ def find_min_count_entities(tweets, entity_desc, min_count):
 
     return data_list_min_count
 
-def clean_text(text, case_sensitive):
+def clean_text(text, case_sensitive, stop_words):
     if case_sensitive:
         text = text.lower()
 
@@ -111,7 +111,7 @@ def clean_text(text, case_sensitive):
     for word in split_text:
         #word = word.strip(PUNCTUATION)
         clean = True
-        #if stop_words and word in STOP_WORDS:
+        if stop_words and word in STOP_WORDS:
         #    clean = False
         #if word in STOP_PREFIXES or word.startswith(STOP_PREFIXES): (still have to code the input for this)
         #    clean = False
@@ -120,8 +120,8 @@ def clean_text(text, case_sensitive):
 
     return clean_text
 
-def return_ngrams(text, n, case_sensitive):
-    text = clean_text(text, case_sensitive)
+def return_ngrams(text, n, case_sensitive, stop_words):
+    text = clean_text(text, case_sensitive, stop_words)
 
     n_grams = []
     for p in range(0, len(text) - (n - 1)):
@@ -132,35 +132,36 @@ def return_ngrams(text, n, case_sensitive):
 
     return n_grams
 
-def return_all_ngrams(tweets, n, case_sensitive):
+def return_all_ngrams(tweets, n, case_sensitive, stop_words):
     all_ngrams = []
     for tweet in tweets:
-        new_ngram = return_ngrams(tweet["abridged_text"], n, case_sensitive)
+        new_ngram = return_ngrams(tweet["abridged_text"], n, case_sensitive, stop_words)
         # may need to be extend instead of append
         all_ngrams.append(new_ngram)
     return all_ngrams
 
 def find_top_k_ngrams(tweets, n, case_sensitive, k):
-
-    all_ngrams = return_all_ngrams(tweets, n, case_sensitive)
+    stop_words = True
+    all_ngrams = return_all_ngrams(tweets, n, case_sensitive, stop_words)
     return find_top_k(all_ngrams, k)
 
 def find_min_count_ngrams(tweets, n, case_sensitive, min_count):
-
-    all_ngrams = return_all_ngrams(tweets, n, case_sensitive)
+    stop_words = True
+    all_ngrams = return_all_ngrams(tweets, n, case_sensitive, stop_words)
     min_count = find_min_count(all_ngrams, min_count)
 
     return min_count
 
 def find_salient_ngrams(tweets, n, case_sensitive, threshold):
-    all_ngrams = return_all_ngrams(tweets, n, case_sensitive)
+    stop_words = False
+    all_ngrams = return_all_ngrams(tweets, n, case_sensitive, stop_words)
     salient_n = find_salient(all_ngrams, threshold)
 
     return salient_n
 
 PUNCTUATION = ['#']
-#STOP_PREFIXES --> just write it
-#STOP_WORDS --> get it
+STOP_PREFIXES
+STOP_WORDS
 
 tweets = [ {"abridged_text": "the cat in the hat" },
            {"abridged_text": "don't let the cat on the hat" },
